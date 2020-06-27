@@ -76,6 +76,7 @@ User.prototype.toString = function() {
 exports.add = function(name) {
     let id = toId(name);
     this[id] = new User(name);
+    this[id].quills = Quills.getQuills(this[id])
 }
 
 exports[toId(Config.username)] = new User(" " + Config.username);

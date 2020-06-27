@@ -1,4 +1,4 @@
-module.exports = {
+exports.commands = {
     autohide: {
 		'': 'on',
 		on: function(room, user, args) {

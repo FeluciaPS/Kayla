@@ -60,7 +60,7 @@ global.Ranks = {
 
 exports.SplitMessage = function (message) {
     let a = message.startsWith(Config.char) ? message.split(" ")[0].substring(Config.char.length) : false;
-    let b = message.substring(a.length + 2).replace(/, /g, ",").split(",");
+    let b = message.substring(a.length + 2).split(",").map(x => x.trim());
     let c = message.substring(message.indexOf(" ") + 1);
     if (c.startsWith(" ")) c = c.substring(1);
     return [a, b, c];
@@ -88,6 +88,6 @@ String.prototype.capitalize = function() {
     return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
-exports.cmdErr = function(text) {
+exports.errorCommand = function(text) {
     return "Usage: ``" + Config.char + text + "``.";
 }

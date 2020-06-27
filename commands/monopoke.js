@@ -23,7 +23,7 @@ let chooseMonopoke = function(gen) {
     return mon.name;
 }
 
-module.exports = {
+exports.commands = {
     monopoke: {
         '': function(room, user, args) {
             if (!canMakeTour(room, user)) return;

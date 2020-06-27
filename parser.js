@@ -45,6 +45,7 @@ bot.on('c', (parts) => {
     }
     let time = parts[2];
     let [cmd, args, val] = Utils.SplitMessage(message);
+    const command = cmd;
     if (cmd in Commands) {
         if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];
         let func = Commands[cmd];
@@ -58,7 +59,7 @@ bot.on('c', (parts) => {
             func = func[target];
             args.shift();
         }
-        func(Rooms[room], user, args, val, time);
+        func(Rooms[room], user, args, val, time, command);
         logger.emit('cmd', cmd, val);
     }
 });
@@ -79,7 +80,6 @@ bot.on('pm', (parts) => {
         Commands[cmd](user, user, args, val);
         logger.emit('cmd', cmd, val);
     }
-    Reminder.parse(user, user, message);
 });
 
 bot.on('j', (parts) => {

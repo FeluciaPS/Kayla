@@ -100,4 +100,5 @@ Room.prototype.toString = function() {
 
 exports.add = function(id) {
     this[id] = new Room(id);
+    if (global.Quills) Quills.loadRoom(this[id]);
 }

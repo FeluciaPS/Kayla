@@ -75,18 +75,21 @@ let files = {
 bot.on('reload', (file, room) => {
     let all = file === "all";
     if (file === "parser" || all) {
-	let events = bot.eventNames();
-	for (let e in events) {
-	    let ev = events[e];
-	    if (ev === "reload") continue;
-	    bot.removeAllListeners(ev);
-	}
+		let events = bot.eventNames();
+		for (let e in events) {
+		    let ev = events[e];
+		    if (ev === "reload") continue;
+		    bot.removeAllListeners(ev);
+		}
+    }
+    if (file === "commands" || all) {
+    	Commands.beforeReload();
     }
     for (let f in files) {
-	if (file !== f && !all) continue;
-	let dt = files[f];
-	eval("delete require.cache[require.resolve('./" + dt[1] + "')];");
-	eval(dt[0] + " = require('./" + dt[1] + "');");
-	Send(room, f + " reloaded.");
+		if (file !== f && !all) continue;
+		let dt = files[f];
+		eval("delete require.cache[require.resolve('./" + dt[1] + "')];");
+		eval(dt[0] + " = require('./" + dt[1] + "');");
+		Send(room, f + " reloaded.");
     }
 });

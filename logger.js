@@ -17,3 +17,11 @@ logger.on('log', (msg) => {
 logger.on('chat', (room, user, msg) => {
     console.log(`[${Rooms[room].name}] ${user.trim()}: ${msg.trim()}`)
 });
+
+logger.on('save-start', (data) => {
+	console.log(`[${"save".grey}] Saving ${data} data.`);
+});
+
+logger.on('save-end', (data) => {
+	console.log(`[${"save".grey}] Saved ${data} data.`);
+});

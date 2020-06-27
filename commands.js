@@ -3,6 +3,7 @@ global.PokeDex = require('./data/pokedex.js');
 global.fdata = require('./data/formats-data.js');
 global.Items = require('./data/items.js');
 
+let CmdObj = {};
 let commands = {
     // Utilities
 	th: 'tourhistory',
@@ -74,13 +75,9 @@ let commands = {
     },    
     
     modnote: function(room, user, args, val) {
-        console.log("test");
         if (room != user) return;
-        console.log("test 2");
         if (!args[0]) return user.send(Utils.errorCommand('modnote [room], [message]'));
         room = Utils.toRoomId(args[0]);
-        console.log(Object.keys(Rooms));
-        console.log(Rooms[room]);
         if (!Rooms[room]) return user.send("Room doesn't exist, or I'm not in it");
         let self = Users[toId(Config.username)];
         if (self.rooms[room] != "*") return user.send("I'm not a bot in that room");
@@ -202,7 +199,16 @@ for (let f in files) {
     if (file.substring(file.length-3) !== ".js") continue;
     if (require.cache[require.resolve('./commands/' + file)]) delete require.cache[require.resolve('./commands/' + file)];
     let contents = require('./commands/' + file);
-    Object.assign(commands, contents);
+    Object.assign(commands, contents.commands);
+    CmdObj[file.substring(file.length-3)] = contents;
+}
+
+commands.beforeReload = function(room, user, args) {
+    if (room) return; // this is not a command
+    for (let i in CmdObj) {
+        let obj = CmdObj[i];
+        if (obj.beforeReload) obj.beforeReload();
+    }
 }
 
 module.exports = commands;
