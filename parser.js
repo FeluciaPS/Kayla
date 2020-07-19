@@ -30,7 +30,7 @@ bot.on('c', (parts) => {
     let room = Utils.getRoom(parts[0]);
     let user = Users[toId(parts[3])];
     if (!parts[4]) return;
-    let message = parts[4].trim();
+    let message = parts.slice(4).join('|').trim();
     for (let i in Rooms) {
     if (Rooms[i].tournament && !Rooms[i].tournament.started) Rooms[i].tournament.checkstart();    
     }
@@ -42,6 +42,12 @@ bot.on('c', (parts) => {
             let username = message.split(' was muted ')[0].split(' ').slice(1).join(' ');
             Rooms[room].send('/hidetext ' + username);
         }
+    }
+    if (message.startsWith('/raw')) {
+        message = message.slice(5);
+        let regex = new RegExp("<[^\>]+[^/]>", "gi");
+        message = message.replace('</summary>', '<br />').replace(regex, '').replace(/<br \/>/gi, '\n')
+            .replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&quot;/gi, '"').replace(/&amp;/gi, '&').replace(/&apos;/gi, '\'').replace(/&#x2f;/gi, '/');
     }
     let time = parts[2];
     let [cmd, args, val] = Utils.SplitMessage(message);
@@ -67,17 +73,34 @@ bot.on('c', (parts) => {
 bot.on('pm', (parts) => {
     let room = null;
     let user = Users[toId(parts[2])];
-    let message = parts[4].trim();
+    let message = parts.slice(4).join('|').trim();
+    if (message.startsWith('/raw')) {
+        message = message.slice(5);
+        let regex = new RegExp("<[^\>]+[^/]>", "gi");
+        message = message.replace('</summary>', '<br />').replace(regex, '').replace(/<br \/>/gi, '\n')
+            .replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&quot;/gi, '"').replace(/&amp;/gi, '&').replace(/&apos;/gi, '\'').replace(/&#x2f;/gi, '/');;
+    }
     if (!user) {
         Users.add(parts[2]);
         user = Users[toId(parts[2])];
     }
     else logger.emit('pm', user.name, message); // Note: No PM handler exists for the logger.
     let [cmd, args, val] = Utils.SplitMessage(message);
+    const command = cmd;
     if (cmd in Commands) {
         if (typeof Commands[cmd] === 'string') cmd = Commands[cmd];
-        if (typeof Commands[cmd] === 'object') return; // Can't do that right now
-        Commands[cmd](user, user, args, val);
+        let func = Commands[cmd];
+        if (typeof func === 'object') {
+        let target = toId(args[0]);
+        if (!target || !func[target]) {
+            target = '';
+            args = [''].concat(args);
+        }
+        if (target in func && typeof func[target] === 'string') target = func[target];
+            func = func[target];
+            args.shift();
+        }
+        func(user, user, args, val, null, command);
         logger.emit('cmd', cmd, val);
     }
 });
@@ -86,8 +109,13 @@ bot.on('j', (parts) => {
     let room = Utils.getRoom(parts[0]);
     let p = parts[2].substring(1).split("@")
     let user = parts[2].substring(0, 1) + p[0];
-    console.log(user);
+    logger.emit('join', room, user);
     if (!Users[toId(user)]) Users.add(user);
+    for (let i in CmdObj) {
+        if (CmdObj[i].onJoin) {
+            CmdObj[i].onJoin(room, user);
+        }
+    }
     Users[toId(user)].join(room, user);
 });
 

@@ -4,16 +4,17 @@
 
 exports.username = "";
 exports.password = "";
+exports.avatar = 187;
 
 /*
  * Other
  */
  
 exports.rooms = [];
-exports.char = '.';
+exports.char = ';';
 exports.devs = [];
 
-exports.git = 'https://github.com/TheMezStrikes/bot-base/'
+exports.git = 'https://github.com/TheMezStrikes/Kayla/'
 /*
  * Mail
  */

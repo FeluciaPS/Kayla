@@ -1,10 +1,12 @@
 {
-  "name": "uopbot-main",
-  "description": "UOP is bot mainframe",
-  "author": "UnleashOurPassion <TheMezStrikes@gmail.com>",
+  "name": "kayla-main",
+  "description": "Kayla the Bookworm PS bot",
+  "author": "Felucia <TheMezStrikes@gmail.com>",
   "dependencies": {
     "colors": "1.x.x",
     "escape-html": "^1.0.3",
+    "markdown": "^0.5.0",
+    "probe-image-size": "^5.0.0",
     "request": "^2.88.0",
     "websocket": "1.x.x"
   },

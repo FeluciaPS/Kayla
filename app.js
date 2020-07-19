@@ -32,7 +32,12 @@ global.Parse = require('./parser.js');
 global.Rooms = require('./Room.js');
 global.Users = require('./User.js');
 global.Tournament = require('./Tournament.js');
-global.Commands = require('./commands.js');
+let QuillManager = require('./Quills.js')
+global.Quills = new QuillManager();
+Quills.loadQuills();
+let commands = require('./commands.js');
+global.Commands = commands.commands;
+global.CmdObj = commands.CmdObj;
 global.Send = Utils.send;
 global.Sendpm = Utils.sendpm;
 global.Monitor = require('./monitor.js');
@@ -47,6 +52,7 @@ websocket.connect(psurl);
 global.Connection = ""
 websocket.on('connect', function (connection) {
 	Connection = connection;
+	connection.send("|/avatar " + (Config.avatar ? Config.avatar : 167));
 	connection.on('message', function (message) {
 		let data = message.utf8Data;
 		let parts = data.split('|');
@@ -90,6 +96,10 @@ bot.on('reload', (file, room) => {
 		let dt = files[f];
 		eval("delete require.cache[require.resolve('./" + dt[1] + "')];");
 		eval(dt[0] + " = require('./" + dt[1] + "');");
-		Send(room, f + " reloaded.");
+		room.send(f + " reloaded.");
+    }
+    if (file === "commands" || all) {
+    	CmdObj = Commands.CmdObj;
+    	Commands = Commands.commands;
     }
 });

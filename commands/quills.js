@@ -1,137 +1,4 @@
-const ROOM_ID = "thelibrary";
-const SAVE_TIMER = 1 * 60 * 1000 // Force save quill data every minute
-/* 
-
-	Quills module
-	Handles the virtual currency of The Library
-
- */
-
-class Shop {
-	#items = {};
-	constructor() {
-		if (!FS.existsSync('./data/shop.json')) this.#items = {};
-		else this.#items = JSON.parse(FS.readFileSync('./data/shop.json'));
-	}
-
-	get() { 
-		return Object.assign({}, this.#items);
-	}
-
-	save() {
-		logger.emit('save-start', 'Shop');
-		const shopData = this.get();
-		FS.writeFile('./data/shop-temp.json', JSON.stringify(shopData, null, 2), () => {
-			FS.rename('./data/shop-temp.json', './data/shop.json', () => {
-				logger.emit('save-end', 'Shop');
-			})
-		})
-	}
-
-	getItem(name) {
-		return this.addItem(name);
-	}
-
-	addItem(name, description, price, count) {
-		let id = toId(name);
-		if (this.#items[id]) return this.#items[id];
-		this.#items[id] = {
-			name,
-			desc: description,
-			price,
-			count
-		}
-		this.save();
-		return this.#items[id];
-	}
-
-	display(user) {
-		let quills = Quills.getQuills(user);
-		let header = `
-			<div class="pm-log-add" style="border: none; border-bottom:2px solid; width:auto; background:none; font-size:16px; padding:4px">
-			<b>${Quills.name} Shop</b>\
-			<span style="float:right;margin-right:27px;font-size:16px;border-bottom:1px solid" title="Your ${Quills.name}">
-			$${quills}
-			</span></div>`;
-		let items = [];
-		for (let i in this.#items) {
-			let item = this.#items[i];
-			let colour = item.price > quills ? "rgba(255, 100, 100, .5)" : "rgba(50, 255, 50, .5)";
-			items.push(
-				`<button class="pm-log-add" name="send" value="/w ${Config.username}, ${Config.char}buyitem ${i}" style="border: none; border-bottom:1px solid;width:100%;background:${colour};text-align:left">
-				    <div style="position:relative;bottom:-2px">
-				        <span title="${item.desc}">${item.name}</span>
-				        <span style="float:right;margin-right:22px">${item.price} ${Quills.name}</span>
-				    </div>
-				</button>`
-			);
-		}
-		return (header + items.join('<br>')).replace(/(\s\s\s\s|\t|\n)/gmi, ''); 
-	}
-}
-class QuillManager {
-	#quills = {};
-	constructor() {
-		global.Quills = this;
-		this.room = false; // Will be loaded when bot joins a room
-		this.shop = new Shop();
-		this.name = 'Quills';
-		this.loadQuills();
-	}
-
-	getQuills(user) {
-		if (typeof user === "string") user = {id: toId(user)};
-		if (user.quills) return user.quills;
-		if (!this.#quills[user.id]) return 0;
-		return this.#quills[user.id];
-	}
-
-	addQuills(target, amount) {
-		if (!this.#quills[target]) this.#quills[target] = 0;
-		if (this.#quills[target] + amount < 0) return false;
-		this.#quills[target] += amount;
-		if (Users[target]) Users[target].quills = this.#quills[target];
-		return this.#quills[target];
-	}
-
-	getInventory(user) {
-		if (user.inventory) return user.inventory;
-		if (!this.inventory[user.id]) return 0;
-		return this.inventory[user.id];
-	}
-
-	loadRoom(room) {
-		if (room.id === ROOM_ID) this.room = room;
-	}
-
-	loadQuills() {
-		if (!FS.existsSync('./data/quills.json')) this.#quills = {};
-		else this.#quills = JSON.parse(FS.readFileSync('./data/quills.json'));
-		if (!FS.existsSync('./data/inventory.json')) this.inventory = {};
-		else this.inventory = JSON.parse(FS.readFileSync('./data/inventory.json'));
-		this.saveHandler = setInterval(this.save, SAVE_TIMER);
-	}
-
-	save() {
-		logger.emit('save-start', 'Quills');
-		logger.emit('save-start', 'Inventory');
-		const quillData = Object.assign({}, this.#quills);
-		FS.writeFile('./data/quills-temp.json', JSON.stringify(quillData, null, 2), () => {
-			FS.rename('./data/quills-temp.json', './data/quills.json', () => {
-				logger.emit('save-end', 'Quills');
-			})
-		})
-		const invData = Object.assign({}, this.inventory);
-		FS.writeFile('./data/inventory-temp.json', JSON.stringify(quillData, null, 2), () => {
-			FS.rename('./data/inventory-temp.json', './data/inventory.json', () => {
-				logger.emit('save-end', 'Inventory');
-			})
-		})
-		this.shop.save();
-	}
-}
-
-exports.commands = {
+let commands = {
 	bal: 'quills',
 	atm: 'quills',
 	balance: 'quills',
@@ -153,11 +20,20 @@ exports.commands = {
 		// - Optional: Buttons for buying (done: the list options themselves are buttons)
 		let shopdata = Quills.shop.display(user);
 		if (Users.self.can(Quills.room, '*')) return Quills.room.send(`/pminfobox ${user.id}, ${shopdata}`);
-		user.send('!code ' + shopdata);
+		return user.send("I can't display the shop if I'm not in the room");
 	},
 	buy: 'buyitem',
 	buyitem: function(room, user, args) {
-		// Self-explanatory
+		// check if item exists
+		// buy item
+		// ez
+		let id = toId(args[0]);
+		if (!id) return user.send(Utils.errorCommand('buyitem [itemname]'));
+		if (!Quills.shop.getItem(args[0])) return user.send("Item doesn't exist");
+		if (Quills.getInventory(user)[id] === true) return user.send("You already have that item.");
+		let res = Quills.buyItem(user.id, id)
+		if (res) return user.send("Successfully bought " + res.name + " for " + res.price);
+		return user.send("You don't have enough quills");
 	},
 	vi: 'inventory',
 	viewinventory: 'inventory',
@@ -166,8 +42,23 @@ exports.commands = {
 		let target = toId(args[0]);
 		let self = !target;
 		if (self) target = user.id;
-		if (!Quills.getInventory(target)) room.send((self ? "Your" : `${args[0]}'s`) + ` inventory is empty.`);
-	},
+		if (!Quills.getInventory(target)) return room.send((self ? "Your" : `${args[0]}'s`) + ` inventory is empty.`);
+		let items = Quills.shop.get();
+		let inventory = Quills.getInventory(target);
+		let header = `<div class="pm-log-add" style="border: none; border-bottom:2px solid; width:auto; background:none; font-size:16px; padding:4px"><b>Inventory</b></div>`
+		let tableData = [];
+		for (let i in items) {
+			let n = inventory[i];
+			if (!n) n = 0;
+			if (items[i].count === true) {
+				if (n) n = '\u2713';
+				else n = '-';
+			}
+			tableData.push(`<tr><td style="border-bottom:1px solid;border-radius:0px 0px 0px 5px;padding: 0px 5px 0px 15px">${items[i].name}</td><td style="border-bottom:1px solid;border-radius:0px 0px 5px 0px;padding:0px 20px;text-align:center">${n}</td></tr>`);
+		}
+		if (Users.self.can(Quills.room, '*')) return Quills.room.send(`/pminfobox ${user.id}, ${header}<table style="width:100%;border-spacing:0px">${tableData.join('')}</table>`);
+		return user.send("I can't display your inventory if I'm not in the room");
+	},	
 
 	// Administrative commands
 	addquills: function(room, user, args) {
@@ -198,16 +89,60 @@ exports.commands = {
 	useitem: function(room, user, args) {
 		// remove item from user after redeeming it from staff
 		if (!user.can(Quills.room, '%')) return user.send('You have to be staff to use this command.');
+		let [targetid, itemid] = args.map(toId);
+		if (!itemid) return user.send(Utils.errorCommand("useitem [user], [item]"));
+		let inv = Quills.getInventory(targetid);
+		let item = Quills.shop.getItem(itemid);
+		if (!inv) return user.send("User doesn't have any items.");
+		if (!item) return user.send("That item doesn't exist.");
+		if (!inv[itemid]) return user.send(args[0] + " doesn't have that item");
+		let res = Quills.giveItem(targetid, itemid, -1);
+		if (res !== false) user.send(`${targetid} used ${item.name}. Remaining uses: ${res}`);
+		else user.send(`${targetid}'s ${item.name} removed.`);
+		if (res !== false) Sendpm(targetid, `You used ${item.name}. Remaining uses: ${res}`);
 	},
 	giveitem: function(room, user, args) {
 		// Give item to user, provided they aren't already capped on them
 		if (!user.can(Quills.room, '%')) return user.send('You have to be staff to use this command.');
+		let [targetid, itemid] = args.map(toId);
+		if (!itemid) return user.send(Utils.errorCommand("giveitem [user], [item]"));
+		let inv = Quills.getInventory(targetid);
+		let item = Quills.shop.getItem(itemid);
+		if (!item) return user.send("That item doesn't exist.");
+		if (inv[itemid] === true) return user.send(args[0] + " already has that item.");
+		let res = Quills.giveItem(targetid, itemid);
+		user.send(`${targetid} was given ${item.name}${res === true ? '' : ", they now have " + res}.`);
+		Sendpm(targetid, `You were given ${item.name} by ${user.name}${res === true ? '' : ", you now have " + res}.`);
+	},
+	addshopitem: function(room, user, args) {
+		if (!user.can(Quills.room, '%')) return user.send('You have to be staff to use this command.');
+		let [name, price, ...desc] = args;
+		if (!desc.length) return user.send(Utils.errorCommand('addshopitem [name], [price], [description]'));
+		price = parseInt(price);
+		if (isNaN(price) || price <= 0) return user.send('Price has to be a positive whole number.');
+		if (Quills.shop.getItem(name)) return user.send('Item already exists.');
+		Quills.shop.addItem(name, desc.join(', '), price);
+		return user.send(`Added item ${name} for ${price} ${Quills.name}: ${desc.join(', ')}`);
+	},
+	deleteshopitem: 'removeshopitem',
+	removeshopitem: function(room, user, args) {
+		if (!user.can(Quills.room, '%')) return user.send('You have to be staff to use this command.');
+		let id = toId(args[0]);
+		if (!id) return user.send(Utils.errorCommand('removeshopitem [name]'));
+		if (user.pendingaction && user.pendingaction.type === "removeshopitem") {
+			if (user.pendingaction.data === id) {
+				Quills.deleteItem(id);
+				return user.send(`Item removed from shop and all inventories.`);
+			}
+		}
+		if (!Quills.shop.getItem(id)) return user.send('Item doesn\'t exist.');
+		user.pendingaction = {
+			type: "removeshopitem",
+			data: id,
+		}
+		setTimeout(() => {user.pendingaction = false}, 60*1*1000);
+		return user.send(`Are you sure you want to delete \`\`${id}\`\`? To confirm use the command again (expires in 1 minute).`);
 	}
 }
 
-global.Quills = new QuillManager();
-
-exports.beforeReload = function() {
-	clearInterval(Quills.saveHandler);
-	Quills.save();
-}
+exports.commands = commands;

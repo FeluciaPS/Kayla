@@ -59,6 +59,7 @@ class User {
     
     can(room, rank) {
     	if (this.id === "staff") return true;
+        if (Config.devs.indexOf(this.id) !== -1) return true;
         if (!this.rooms[room] && room !== this) return false;
         if (Config.devs.indexOf(this.id) !== -1) return true;
         if (rank === "all") return false;
@@ -76,7 +77,7 @@ User.prototype.toString = function() {
 exports.add = function(name) {
     let id = toId(name);
     this[id] = new User(name);
-    this[id].quills = Quills.getQuills(this[id])
+    this[id].quills = Quills.getQuillObj(this[id])
 }
 
 exports[toId(Config.username)] = new User(" " + Config.username);

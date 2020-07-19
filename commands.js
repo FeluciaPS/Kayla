@@ -51,14 +51,21 @@ let commands = {
             });
         });
     },
-    
+    help: function(room, user, args) {
+        let target = user.can(room, '+') ? room : user;
+        return target.send('https://pastebin.com/70HvhWUA');
+    },
+
+    kill: function(room, user, args) {
+        if (!user.can(Quills.room, '@')) return;
+        Quills.room.send('/logout');
+    },
     // Staff things 
     settype: 'st',
     st: function(room, user, args) {
         if (!user.can(room, '%')) return;
         let type = args[0];
         if (!type) return;
-        console.log(type);
         if (type.startsWith("rr")) {
             let count = parseInt(type.substring(2));
             if (count) room.send("/tour settype rr,, " + count);
@@ -82,10 +89,10 @@ let commands = {
         let self = Users[toId(Config.username)];
         if (self.rooms[room] != "*") return user.send("I'm not a bot in that room");
         if (!user.can(room, "%")) return user.send('Access denied.');
-        let escape = require('escape-html');
+        let htmlescape = require('escape-html');
         let msg = val.substring(args[0].length + 1).trim();
-        if (Config.devs.indexOf(user.id) == -1) msg = escape(msg);
-        let ret = `/addrankhtmlbox %,<b>${escape(user.rooms[room])}${user.name}:</b> ${msg}<br><span style='color:#444444;font-size:10px'>Note: Only users ranked % and above can see this.</span>`
+        if (Config.devs.indexOf(user.id) == -1) msg = htmlescape(msg);
+        let ret = `/addrankhtmlbox %,<b>${htmlescape(user.rooms[room])}${user.name}:</b> ${msg}<br><span style='color:#444444;font-size:10px'>Note: Only users ranked % and above can see this.</span>`
         Send(room, ret);
     },
     // Dev stuff
@@ -200,7 +207,7 @@ for (let f in files) {
     if (require.cache[require.resolve('./commands/' + file)]) delete require.cache[require.resolve('./commands/' + file)];
     let contents = require('./commands/' + file);
     Object.assign(commands, contents.commands);
-    CmdObj[file.substring(file.length-3)] = contents;
+    CmdObj[file.substring(0, file.length-3)] = contents;
 }
 
 commands.beforeReload = function(room, user, args) {
@@ -211,4 +218,5 @@ commands.beforeReload = function(room, user, args) {
     }
 }
 
-module.exports = commands;
+exports.commands = commands;
+exports.CmdObj = CmdObj;

@@ -60,7 +60,7 @@ global.Ranks = {
 
 exports.SplitMessage = function (message) {
     let a = message.startsWith(Config.char) ? message.split(" ")[0].substring(Config.char.length) : false;
-    let b = message.substring(a.length + 2).split(",").map(x => x.trim());
+    let b = message.substring(a.length + 2).split(message.includes('\n') ? '\n' : ',').map(x => x.trim());
     let c = message.substring(message.indexOf(" ") + 1);
     if (c.startsWith(" ")) c = c.substring(1);
     return [a, b, c];
@@ -91,3 +91,21 @@ String.prototype.capitalize = function() {
 exports.errorCommand = function(text) {
     return "Usage: ``" + Config.char + text + "``.";
 }
+
+// Code re-used from the old Kobold Librarian code
+let probe = require('probe-image-size');
+exports.fitImage = async function (url, maxHeight = 300, maxWidth = 400) {
+    let {height, width} = await probe(url);
+
+    let ratio = 1;
+
+    if (width <= maxWidth && height <= maxHeight) return [width, height];
+
+    if (height * (maxWidth/maxHeight) > width) {
+        ratio = maxHeight / height;
+    } else {
+        ratio = maxWidth / width;
+    }
+
+    return [Math.round(width * ratio), Math.round(height * ratio)];
+};

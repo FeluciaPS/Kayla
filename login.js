@@ -60,7 +60,6 @@ module.exports = function (id, challstr) {
 			} catch (e) {}
 			console.log('Sending log in trn...');
 			Send('', '/trn ' + Config.username + ',0,' + data);
-			Send("", "/avatar " + (Config.avatar ? Config.avatar : 167));
             autoJoin(0);
 		});
 	});

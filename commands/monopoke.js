@@ -27,7 +27,6 @@ exports.commands = {
     monopoke: {
         '': function(room, user, args) {
             if (!canMakeTour(room, user)) return;
-            console.log(args)
             if (!args[0]) args[0] = chooseMonopoke(false);
             let dex = PokeDex[toId(args[0])];
             let fdt = fdata[toId(args[0])];
