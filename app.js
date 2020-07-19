@@ -102,4 +102,5 @@ bot.on('reload', (file, room) => {
     	CmdObj = Commands.CmdObj;
     	Commands = Commands.commands;
     }
+    if (Config.avatar) Send('|/avatar ' + Config.avatar);
 });
