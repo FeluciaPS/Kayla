@@ -5,8 +5,8 @@ let commands = {
 	quills: function(room, user, args) {
 		// send user how many quills they've got, if any
 		let target = toId(args[0])
-		if (!target) return room.send(`You have ${Quills.getQuills(user)} ${Quills.name}.`);
-		return room.send(`${args[0]} has ${Quills.getQuills(target)} ${Quills.name}.`);
+		if (!target) return user.send(`You have ${Quills.getQuills(user)} ${Quills.name}.`);
+		return user.send(`${args[0]} has ${Quills.getQuills(target)} ${Quills.name}.`);
 	},
 
 	// Shop commands
