@@ -8,7 +8,11 @@ let commands = {
 		if (!target) return user.send(`You have ${Quills.getQuills(user)} ${Quills.name}.`);
 		return user.send(`${args[0]} has ${Quills.getQuills(target)} ${Quills.name}.`);
 	},
-
+	leaderboard: function(room, user, args) {
+		let boarddata = Quills.getLeaderboard();
+		if (Users.self.can(Quills.room, '*')) return Quills.room.send(`/sendhtmlpage ${user.id}, Leaderboard, ${boarddata}`);
+		return user.send("I can't display the leaderboard if I'm not in the room");
+	},
 	// Shop commands
 	shop: 'viewshop',
 	viewshop: function(room, user, args) {

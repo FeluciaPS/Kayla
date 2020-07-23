@@ -74,6 +74,13 @@ bot.on('pm', (parts) => {
     let room = null;
     let user = Users[toId(parts[2])];
     let message = parts.slice(4).join('|').trim();
+    if (message.startsWith('|requestpage')) {
+        let [blank, type, target, ...page] = message.split('|');
+        if (page === "Leaderboard") {
+            if (!Commands.leaderboard) return user.send("No leaderboard response configured... Contact a bot owner.");
+            return Commands.leaderboard(user, user, []);
+        } 
+    }
     if (message.startsWith('/raw')) {
         message = message.slice(5);
         let regex = new RegExp("<[^\>]+[^/]>", "gi");

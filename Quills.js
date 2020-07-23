@@ -208,6 +208,22 @@ class QuillManager {
 		}
 		if (n === 3 || !n) this.shop.save();
 	}
+
+	getLeaderboard() {
+		let html = `<center style="margin:35px"><table style="width:100%;text-align:center;border:1px solid">`
+		html += `<tr><th>#</th><th>Username</th><th>Current Quills</th><th>Total Earned</th></tr>`;
+
+		let quilldata = Object.values(JSON.parse(JSON.stringify(this.#quills))) // make a hard copy of the quills data to avoid fucking with it because I'm paranoid.
+
+		quilldata = quilldata.sort((a, b) => { return a.total - b.total});
+		for (let i = 0; i < quilldata.length; i++) {
+			let dt = quilldata[i];
+			html += `<tr><td>${i+1}</td><td>${dt.name}</td><td>${dt.current}</td><td>${dt.total}</td><td></td></tr>`;
+		}
+		
+		html += `</table></center>`;
+		return html;
+	}
 }
 
 module.exports = QuillManager;
