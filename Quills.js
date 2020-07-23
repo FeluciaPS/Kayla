@@ -215,7 +215,7 @@ class QuillManager {
 
 		let quilldata = Object.values(JSON.parse(JSON.stringify(this.#quills))) // make a hard copy of the quills data to avoid fucking with it because I'm paranoid.
 
-		quilldata = quilldata.sort((a, b) => { return a.total - b.total});
+		quilldata = quilldata.sort((a, b) => { return b.total - a.total});
 		for (let i = 0; i < quilldata.length; i++) {
 			let dt = quilldata[i];
 			html += `<tr><td>${i+1}</td><td>${dt.name}</td><td>${dt.current}</td><td>${dt.total}</td><td></td></tr>`;
