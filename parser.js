@@ -76,7 +76,7 @@ bot.on('pm', (parts) => {
     let message = parts.slice(4).join('|').trim();
     if (message.startsWith('|requestpage')) {
         let [blank, type, target, ...page] = message.split('|');
-        if (page === "Leaderboard") {
+        if (page === "leaderboard") {
             if (!Commands.leaderboard) return user.send("No leaderboard response configured... Contact a bot owner.");
             return Commands.leaderboard(user, user, []);
         } 
