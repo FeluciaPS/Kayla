@@ -76,7 +76,7 @@ bot.on('pm', (parts) => {
     let message = parts.slice(4).join('|').trim();
     if (message.startsWith('|requestpage')) {
         let part = message.split('|');
-	let page = part[3];
+	    let page = part[3];
         if (page === "leaderboard") {
             if (!Commands.leaderboard) return user.send("No leaderboard response configured... Contact a bot owner.");
             return Commands.leaderboard(user, user, []);
@@ -93,6 +93,12 @@ bot.on('pm', (parts) => {
         user = Users[toId(parts[2])];
     }
     else logger.emit('pm', user.name, message); // Note: No PM handler exists for the logger.
+    if (message.startsWith('/invite')) {
+        let target = message.slice(8);
+        if (!user.can(Quills.room, '#')) return user.send(`Only Room Owners in ${Quills.room.name} can invite me to rooms.`);
+        user.send(`/join ${target}`);
+        return user.send(`Successfully joined ${target}`);
+    }
     let [cmd, args, val] = Utils.SplitMessage(message);
     const command = cmd;
     if (cmd in Commands) {
