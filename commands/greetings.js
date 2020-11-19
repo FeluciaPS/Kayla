@@ -44,7 +44,7 @@ exports.commands = {
 			let text = args.join(', ');
 			if (!text) return user.send(Utils.errorCommand('greeting set, [text]'));
 			if (text.trim().length > 80) return user.send(`Your greeting may be at most 80 characters (yours is ${text.length})`);
-			greetings[user.id] = text;
+			greetings[Quills.room.id][user.id] = text;
 			save();
 			user.send(`Greeting message set to "${text}".`);
 		},
@@ -53,7 +53,7 @@ exports.commands = {
 			let target = toId(args[0]);
 			if (!target) return user.send(Utils.errorCommand('greeting delete, [user], [reason]') + '. Reason is optional.');
 			let reason = args.slice(1).join(', ');
-			delete greetings[target];
+			delete greetings[Quills.room.id][target];
 			Quills.addItem(target, "greeting", -1);
 			save();
 			let mn = `/modnote ${user.id} deleted ${target}'s greeting message.` + reason ? ` (${reason})` : '';
