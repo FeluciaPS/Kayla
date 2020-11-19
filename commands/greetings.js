@@ -28,10 +28,11 @@ let save = function() {
 // Greeting stuff
 exports.onJoin = function(room, user) {
 	if (!greetings[room.id]) return;
-	if (!greetings[room.id][toId(user)]) return;
-	if (!(timeouts[room.id][toId(user)] > Date.now() - GREET_TIMEOUT)) {
-		timeouts[room.id][toId(user)] = Date.now();
-		room.send(`${greetings[room.id][toId(user)]} (${user.slice(1).trim()})`);
+	if (!greetings[room.id][user.id]) return;
+	if (!timeouts[room.id]) timeouts[room.id] = {};
+	if (!(timeouts[room.id][user.id] > Date.now() - GREET_TIMEOUT)) {
+		timeouts[room.id][user.id] = Date.now();
+		room.send(`${greetings[room.id][user.id]} (${user.name})`);
 	}
 }
 
