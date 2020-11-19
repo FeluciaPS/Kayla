@@ -68,6 +68,7 @@ exports.commands = {
 	joinphrase: {
 		set: function(room, user, args) {
 			if (room === user) return room.send("This command must be used in a room.");
+			if (!user.can(room, '%')) return user.send('Access denied.');
 			if (!greetings[room.id]) greetings[room.id] = {};
 			if (args.length < 2) return room.send(Utils.errorCommand('joinphrase set, [user], [text]'));
 			let target = toId(args[0]);
