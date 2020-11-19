@@ -90,7 +90,7 @@ exports.commands = {
 		},
 		'': 'help',
 		help: function(room, user, args) {
-			return user.send(Utils.errorCommand('joinphrase set, [text]') + " to set a joinphrase " + Utils.errorCommand('joinphrase set, [text]') + " to remove one.");
+			return user.send(Utils.errorCommand('joinphrase set, [user], [text]') + " to set a joinphrase " + Utils.errorCommand('joinphrase delete, [user]') + " to remove one.");
 		}
 	}
 }
