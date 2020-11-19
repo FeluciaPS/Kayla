@@ -127,7 +127,7 @@ bot.on('j', (parts) => {
     if (!Users[toId(user)]) Users.add(user);
     for (let i in CmdObj) {
         if (CmdObj[i].onJoin) {
-            CmdObj[i].onJoin(room, user);
+            CmdObj[i].onJoin(Rooms[room], Users[toId(user)]);
         }
     }
     Users[toId(user)].join(room, user);

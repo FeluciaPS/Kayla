@@ -27,11 +27,11 @@ let save = function() {
 
 // Greeting stuff
 exports.onJoin = function(room, user) {
-	if (room != Quills.room) return;
-	if (!greetings[toId(user)]) return;
-	if (!(timeouts[toId(user)] > Date.now() - GREET_TIMEOUT)) {
-		timeouts[toId(user)] = Date.now();
-		Quills.room.send(`${greetings[toId(user)]} (${user.slice(1).trim()})`);
+	if (!greetings[room.id]) return;
+	if (!greetings[room.id][toId(user)]) return;
+	if (!(timeouts[room.id][toId(user)] > Date.now() - GREET_TIMEOUT)) {
+		timeouts[room.id][toId(user)] = Date.now();
+		room.send(`${greetings[room.id][toId(user)]} (${user.slice(1).trim()})`);
 	}
 }
 
@@ -62,6 +62,33 @@ exports.commands = {
 		'': 'help',
 		help: function(room, user, args) {
 			return user.send(Utils.errorCommand('greeting set, [text]'));
+		}
+	},
+	joinphrase: {
+		set: function(room, user, args) {
+			if (room === user) return room.send("This command must be used in a room.");
+			if (!greetings[room.id]) greetings[room.id] = {};
+			if (args.length < 2) return room.send(Utils.errorCommand('joinphrase set, [user], [text]'));
+			let target = toId(args[0]);
+			let text = args.slice(1).join(', ').trim();
+			if (text.length > 120) return room.send(`A joinphrase may be at most 120 characters (yours is ${text.length})`);
+			greetings[room.id][target] = text;
+			save();
+			room.send(`join message for ${target} set to "${text}".`);
+		},
+		delete: function(room, user, args) {
+			if (room === user) return room.send("This command must be used in a room.");
+			if (!greetings[room.id]) return room.send("This room has no greetings set");
+			if (!user.can(room, '%')) return user.send('Access denied.');
+			let target = toId(args[0]);
+			if (!target) return room.send(Utils.errorCommand('joinphrase delete, [user]'));
+			delete greetings[room.id][target];
+			save();
+			return room.send(`join message for ${target} deleted.`);
+		},
+		'': 'help',
+		help: function(room, user, args) {
+			return user.send(Utils.errorCommand('joinphrase set, [text]') + " to set a joinphrase " + Utils.errorCommand('joinphrase set, [text]') + " to remove one.");
 		}
 	}
 }
