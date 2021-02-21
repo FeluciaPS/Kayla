@@ -13,6 +13,7 @@ let qSend = function (data) {
         for (const toSend of data) qSend(toSend);
         return;
     }
+    data = data.replace(/\s+/gi, " ")
     if (sendTimeout) {
         queue.push(data);
         return;
