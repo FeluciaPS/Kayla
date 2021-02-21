@@ -24,6 +24,7 @@ const dailies = {
         async renderEntry(entry, pm) {
             let imgHTML = '';
             if (!pm) {
+                if (entry.image) entry.image = entry.image.replace(/<wbr \/>/gi, "");
                 const [width, height] = await Utils.fitImage(entry.image, 120, 180).catch(() => {});
                 if (width && height) {
                     imgHTML = `<td>\
