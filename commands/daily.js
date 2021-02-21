@@ -24,7 +24,10 @@ const dailies = {
         async renderEntry(entry, pm) {
             let imgHTML = '';
             if (!pm) {
+                
+                // Fixes a bug where image links would have word breaks in them. I really have no idea why it does that and can't be bothered to find out
                 if (entry.image) entry.image = entry.image.replace(/<wbr \/>/gi, "");
+                
                 const [width, height] = await Utils.fitImage(entry.image, 120, 180).catch(() => {});
                 if (width && height) {
                     imgHTML = `<td>\
