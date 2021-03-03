@@ -32,7 +32,7 @@ class User {
             if (!maildata.length) return;
             while (maildata.length) {
                 let mail = maildata.shift();
-                self.send(mail);
+                Sendpm(self.id, mail);
             }
             FS.writeFile(`mail/${self.id}.json`, JSON.stringify(maildata, null, 4), (err) => {
                 if (err) throw err;
