@@ -190,6 +190,10 @@ class QuillManager {
 	}
 
 	save(n = 0) {
+		FS.writeFileSync('./data/quills.json', JSON.stringify(this.#quills, null, 2));
+		FS.writeFileSync('./data/inventory.json', JSON.stringify(this.#inventory, null, 2));
+		if (n === 3 || !n) this.shop.save();
+		return;
 		if (!Saver.Quills && (n === 1 || !n)) {
 			logger.emit('save-start', 'Quills');
 			FS.writeFile('./data/quills-temp.json', JSON.stringify(this.#quills, null, 2), () => {
