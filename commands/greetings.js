@@ -1,4 +1,4 @@
-const ROOM_ID = "thelibrary";
+const ROOM_ID = "thelibrary ";
 const GREET_TIMEOUT = 1 * 60 * 60 * 1000; // 1 hour delay for Greetings repeating
 /* 
 
