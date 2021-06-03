@@ -47,7 +47,7 @@ bot.on('c', (parts) => {
         message = message.slice(5);
         let regex = new RegExp("<[^\>]+[^/]>", "gi");
         message = message.replace('</summary>', '<br />').replace(regex, '').replace(/<br \/>/gi, '\n')
-            .replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&quot;/gi, '"').replace(/&amp;/gi, '&').replace(/&apos;/gi, '\'').replace(/&#x2f;/gi, '/');
+            .replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&quot;/gi, '"').replace(/&amp;/gi, '&').replace(/&apos;/gi, '\'').replace(/&#x2f;/gi, '/').trim();
     }
     let time = parts[2];
     let [cmd, args, val] = Utils.SplitMessage(message);
