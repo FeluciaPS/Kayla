@@ -37,6 +37,11 @@ bot.on('c', (parts) => {
 	Rooms[room].runChecks(message);
 	Monitor.monitor(user.name, message);
 	logger.emit('chat', Utils.getRoom(parts[0]), user.name, message);
+	for (let i in CmdObj) {
+		if (CmdObj[i].onMessage) {
+			CmdObj[i].onMessage(room, user);
+		}
+	}
 	if (message.startsWith('/log') && Rooms[room].settings.autohide) {
 		if (message.includes("was muted by")) {
 			let username = message.split(' was muted ')[0].split(' ').slice(1).join(' ');

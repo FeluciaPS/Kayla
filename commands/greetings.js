@@ -1,11 +1,14 @@
 const ROOM_ID = "thelibrary ";
 const GREET_TIMEOUT = 1 * 60 * 60 * 1000; // 1 hour delay for Greetings repeating
+const MIN_MESSAGE_COOLDOWN = 35;
+
 /* 
 
 	Greetings module
 
  */
 
+let messages = {}
 let timeouts = {};
 let greetings = {}
 let saveHandler = false;
@@ -22,7 +25,7 @@ let save = function() {
 		FS.rename('./data/greetings-temp.json', './data/greetings.json', () => {
 			logger.emit('save-end', 'Greetings');
 		})
-	})
+	});
 }
 
 // Greeting stuff
@@ -30,9 +33,19 @@ exports.onJoin = function(room, user) {
 	if (!greetings[room.id]) return;
 	if (!greetings[room.id][user.id]) return;
 	if (!timeouts[room.id]) timeouts[room.id] = {};
-	if (!(timeouts[room.id][user.id] > Date.now() - GREET_TIMEOUT)) {
+	if (!messages[room.id]) messages[room.id] = {};
+	if (timeouts[room.id][user.id] <= Date.now() - GREET_TIMEOUT 
+			&& messages[room.id][user.id] >= MIN_MESSAGE_COOLDOWN) {
 		timeouts[room.id][user.id] = Date.now();
+		messages[room.id][user.id] = 0;
 		room.send(`${greetings[room.id][user.id]} (${user.name})`);
+	}
+}
+
+exports.onMessage = function(room, user) {
+	if (!messages[room.id]) messages[room.id] = {};
+	for (let i in messages[room.id]) {
+		messages[room.id][i] += 1;
 	}
 }
 
