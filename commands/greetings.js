@@ -34,7 +34,7 @@ exports.onJoin = function(room, user) {
 	if (!greetings[room.id][user.id]) return;
 	if (!timeouts[room.id]) timeouts[room.id] = {};
 	if (!messages[room.id]) messages[room.id] = {};
-	if (timeouts[room.id][user.id] <= Date.now() - GREET_TIMEOUT 
+	if ((!timeouts[room.id][user.id] || timeouts[room.id][user.id] <= Date.now() - GREET_TIMEOUT)
 			&& (messages[room.id][user.id] >= MIN_MESSAGE_COOLDOWN || !messages[room.id][user.id])) {
 		timeouts[room.id][user.id] = Date.now();
 		messages[room.id][user.id] = 0;
