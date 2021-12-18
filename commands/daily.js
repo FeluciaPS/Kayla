@@ -120,7 +120,7 @@ let buildPage = function(user, type, keys, name) {
 
     // Initialise the form
     ret += `<form style="margin:15px" data-submitsend="/w ${Config.username}, !code `
-    ret += `;setdaily ${type}, ${keys.map(x => `{${x}}`).join(',')}">`;
+    ret += `;setdaily ${type}, ${Object.keys(keys).map(x => `{${x}}`).join(',')}">`;
 
     // Build the form
     for (let key in keys) {
