@@ -136,7 +136,7 @@ let buildPage = function(user, type, keys, name) {
     ret += `</form>`;
 
     // Send the page to the user
-    Quills.room.send(`/sendhtmlpage ${user}, update-${type}, <div style="padding:80px">${ret}</div>`);
+    Quills.room.send(`/sendhtmlpage ${user}, update-${type}, <div style="padding:25px 80px">${ret}</div>`);
 }
 
 let commands = {
