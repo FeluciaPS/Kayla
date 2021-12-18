@@ -124,7 +124,9 @@ let buildPage = function(user, type, keys, name) {
 
     // Build the form
     for (let key in keys) {
-        ret += `<label>${key}</label><br>${inputTypes[key][0]} name="${key}">${inputTypes[key][1]}<br><br>`;
+        let open = inputTypes[keys[key]][0];
+        let close = inputTypes[keys[key]][1];
+        ret += `<label>${key}</label><br>${open} name="${key}">${close}<br><br>`;
     }
 
     // Submit button
