@@ -20,7 +20,11 @@ load();
 const dailies = {
     prompt: {
         name: "Writing Prompt",
-        params: ['title', 'image', 'description'],
+        params: {
+            'title': "textinput", 
+            'image': "textinput", 
+            'description': "textinput-large"
+        },
         async renderEntry(entry, pm) {
             let imgHTML = '';
             if (!pm) {
@@ -48,7 +52,13 @@ const dailies = {
     },
     wotd: {
         name: "Word of the Day",
-        params: ['word', 'pronunciation', 'class', 'definition', 'etymology'],
+        params: {
+            'word': "textinput", 
+            'pronunciation': "textinput", 
+            'class': "textinput", 
+            'definition': "textinput-large", 
+            'etymology': "textinput-large"
+        },
         async renderEntry(entry) {
             return `<span style="font-size: 30pt; color: black; display: block">${entry.word}</span>\
             <span style="font-family: sans-serif; font-size: 12pt; display: block; color: rgba(0,0,0,0.7); letter-spacing: 2px">${entry.pronunciation} / <strong style="letter-spacing: 0">${entry.class}</strong></span>\
@@ -60,7 +70,12 @@ const dailies = {
     },
     hotd: {
         name: "History of the Day",
-        params: ['title', 'date', 'location', 'description'],
+        params: {
+            'title': "textinput", 
+            'date': "textinput", 
+            'location': "textinput", 
+            'description': "textinput"
+        },
         async renderEntry(entry) {
             return `<span style="font-size: 22pt ; display: inline-block; color: black">${entry.title}</span>\
             <span style="font-family: Verdana, Geneva, sans-serif ; font-size: 12pt ; display: block ; color: rgba(0, 0, 0 , 0.7) ; letter-spacing: 0px">\
@@ -88,6 +103,16 @@ async function getHTML(key, pm) {
     </div></div>`;
 }
 
+let inputTypes = {
+    "textinput": [
+        `<input type="text" style="width:50%"`,
+        `</input>`
+    ],
+    "textinput-large": [
+        `<textarea style="width:80%;height:15vh"`,
+        `</textarea>`
+    ]
+}
 let buildPage = function(user, type, keys, name) {
     let ret = "";
     ret += `<h1>Update daily: ${name}</h1>`;
@@ -98,8 +123,8 @@ let buildPage = function(user, type, keys, name) {
     ret += `;setdaily ${type}, ${keys.map(x => `{${x}}`).join(',')}">`;
 
     // Build the form
-    for (let key of keys) {
-        ret += `<label>${key}</label><br><textarea name="${key}"></textarea><br><br>`;
+    for (let key in keys) {
+        ret += `<label>${key}</label><br>${inputTypes[key][0]} name="${key}">${inputTypes[key][1]}<br><br>`;
     }
 
     // Submit button
@@ -129,8 +154,8 @@ let commands = {
             let type = toId(args.shift());
             if (!type) return user.send(Utils.errorCommand(command + " [type], [settings]") + " - you can use this command in !code if you hit the character limit");
             if (!dailies[type]) return user.send("That daily type doesn't exist, valid options are " + Object.keys(dailies).join(', '));
-            let keys = dailies[type].params;
-            if (args.length === 0) return buildPage(user.id, type, keys, dailies[type].name);
+            let keys = Object.keys(dailies[type].params);
+            if (args.length === 0) return buildPage(user.id, type, dailies[type].keys, dailies[type].name);
             let obj = {};
             for (let i = 0; i < keys.length; i++) {
                 if (!args[i]) return user.send(`Not enough arguments, ${type} needs ${keys.join(', ')}`);
