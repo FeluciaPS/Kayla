@@ -99,7 +99,7 @@ let buildPage = function(user, type, keys) {
 
     // Build the form
     for (let key of keys) {
-        ret += `<label>${key}</label><input name="${key}" /><br><br>`;
+        ret += `<label>${key}</label><br><textarea name="${key}"></textarea><br><br>`;
     }
 
     // Submit button
