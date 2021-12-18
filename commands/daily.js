@@ -88,9 +88,9 @@ async function getHTML(key, pm) {
     </div></div>`;
 }
 
-let buildPage = function(user, type, keys) {
+let buildPage = function(user, type, keys, name) {
     let ret = "";
-    ret += `<h1>Update daily: ${type}</h1>`;
+    ret += `<h1>Update daily: ${name}</h1>`;
     ret += `<hr>Reminder, do not input more than 1 line in any textbox or this form does not work.`;
 
     // Initialise the form
@@ -130,7 +130,7 @@ let commands = {
             if (!type) return user.send(Utils.errorCommand(command + " [type], [settings]") + " - you can use this command in !code if you hit the character limit");
             if (!dailies[type]) return user.send("That daily type doesn't exist, valid options are " + Object.keys(dailies).join(', '));
             let keys = dailies[type].params;
-            if (args.length === 0) return buildPage(user.id, type, keys);
+            if (args.length === 0) return buildPage(user.id, type, keys, dailies[type].name);
             let obj = {};
             for (let i = 0; i < keys.length; i++) {
                 if (!args[i]) return user.send(`Not enough arguments, ${type} needs ${keys.join(', ')}`);
