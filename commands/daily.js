@@ -130,7 +130,7 @@ let buildPage = function(user, type, keys, name) {
     }
 
     // Submit button
-    ret += `<input type="submit" />`;
+    ret += `<input type="submit" class="button" />`;
 
     // Close form
     ret += `</form>`;
