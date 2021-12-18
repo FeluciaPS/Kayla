@@ -157,7 +157,7 @@ let commands = {
             if (!type) return user.send(Utils.errorCommand(command + " [type], [settings]") + " - you can use this command in !code if you hit the character limit");
             if (!dailies[type]) return user.send("That daily type doesn't exist, valid options are " + Object.keys(dailies).join(', '));
             let keys = Object.keys(dailies[type].params);
-            if (args.length === 0) return buildPage(user.id, type, dailies[type].keys, dailies[type].name);
+            if (args.length === 0) return buildPage(user.id, type, dailies[type].params, dailies[type].name);
             let obj = {};
             for (let i = 0; i < keys.length; i++) {
                 if (!args[i]) return user.send(`Not enough arguments, ${type} needs ${keys.join(', ')}`);
