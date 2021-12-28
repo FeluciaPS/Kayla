@@ -53,6 +53,7 @@ bot.on('c', (parts) => {
 		let regex = new RegExp("<[^\>]+[^/]>", "gi");
 		message = message.replace('</summary>', '<br />').replace(regex, '').replace(/<br \/>/gi, '\n')
 			.replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&quot;/gi, '"').replace(/&amp;/gi, '&').replace(/&apos;/gi, '\'').replace(/&#x2f;/gi, '/').trim();
+		message = message.replace(/\<wbr \/\>/gi, '');
 	}
 	let time = parts[2];
 	let [cmd, args, val] = Utils.SplitMessage(message);
@@ -92,6 +93,7 @@ bot.on('pm', (parts) => {
 		let regex = new RegExp("<[^\>]+[^/]>", "gi");
 		message = message.replace('</summary>', '<br />').replace(regex, '').replace(/<br \/>/gi, '\n')
 			.replace(/&gt;/gi, '>').replace(/&lt;/gi, '<').replace(/&quot;/gi, '"').replace(/&amp;/gi, '&').replace(/&apos;/gi, '\'').replace(/&#x2f;/gi, '/').trim();
+		message = message.replace(/\<wbr \/\>/gi, '');
 	}
 	if (!user) {
 		Users.add(parts[2]);
