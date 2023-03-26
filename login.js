@@ -23,7 +23,7 @@ module.exports = function (id, challstr) {
 		
 		
 	requestOptions.method = 'POST';
-	let data = 'act=login&name=' + toId(Config.username) + '&pass=' + Config.password + '&challengekeyid=' + id + '&challenge=' + challstr;
+	let data = 'act=login&name=' + toId(Config.username) + '&pass=' + Config.password + '&challengekeyid=' + id + '&challstr=' + challstr;
 	requestOptions.headers = {
 		'Content-Type': 'application/x-www-form-urlencoded',
 		'Content-Length': data.length
