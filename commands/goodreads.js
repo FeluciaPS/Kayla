@@ -95,7 +95,10 @@ let getBookData = async function(query) {
                 let image = document.querySelector('.BookCover img').src;
                 let description = document.querySelector('.TruncatedContent span').innerHTML.replace(/<[^>]+>/g, '').split('').slice(0, 400).join('');
 
-                description = description.replace(/\.[^\s]/g, '. ') + '...';
+                description = description.replace(/[\.;:!?,][^\s]/g, (match) => {
+                    const matchedCharacter = match[0];
+                    return matchedCharacter + ' ';
+                }) + '...';
                 let ratings = document.querySelector('.RatingStatistics__meta > span').textContent.split(/\s/)[0];
                 let genres = Array.from(document.querySelectorAll('.BookPageMetadataSection__genreButton')).map(x => x.textContent);
             
