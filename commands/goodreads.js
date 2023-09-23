@@ -102,8 +102,9 @@ let getBookData = async function(query) {
                 }
             }
             catch (e) {
-                console.log(bookdata);
+                //console.log(bookdata);
             }
+            tries += 1;
         }
 
         return {
@@ -132,6 +133,7 @@ exports.commands = {
             room.send(`/changeuhtml ${ID}, <div class="infobox" style="color: red">${result.data}</div>`);
         }
         else if (result.res === "SUCCESS") {
+            console.log("success!");
             room.send(`/changeuhtml ${ID}, <div class="infobox">${result.data}</div>`);
         }
         else {
