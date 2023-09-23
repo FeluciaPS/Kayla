@@ -5,12 +5,14 @@
   "dependencies": {
     "colors": "1.x.x",
     "escape-html": "^1.0.3",
+    "jsdom": "^22.1.0",
     "markdown": "^0.5.0",
     "probe-image-size": "^5.0.0",
     "request": "^2.88.0",
     "websocket": "1.x.x"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "nvm exec 16 forever start app.js",
+    "stop": "nvm exec 16 forever stop app.js"
   }
 }
