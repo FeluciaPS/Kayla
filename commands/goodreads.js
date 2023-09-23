@@ -71,10 +71,10 @@ let getBookData = async function(query) {
 
         let bookLinkElement = searchDOM.window.document.querySelector('.bookTitle');
         if (!bookLinkElement) {
-            return {
+            resolve({
                 res: 'ERR',
                 data: `No search results for ${query}`
-            }
+            })
         }
         let bookURL = bookLinkElement.href;
         bookURL = bookURL.split('?')[0];
@@ -96,10 +96,10 @@ let getBookData = async function(query) {
                 let genres = Array.from(document.querySelectorAll('.BookPageMetadataSection__genreButton')).map(x => x.textContent);
             
                 let box = buildBox(title, image, description, rating, 2, genres, bookURL)
-                return {
+                resolve({
                     res: `SUCCESS`,
                     data: box
-                }
+                })
             }
             catch (e) {
                 //console.log(bookdata);
@@ -107,12 +107,12 @@ let getBookData = async function(query) {
             tries += 1;
         }
 
-        return {
+        resolve({
             res: 'ERR',
             data: `Connection timed out or couldn't load details page. `
                 + `Try again in a few minutes, or go to the `
                 + `<a href="${bookURL}">goodreads page</a>`
-        };
+        })
     })
 }
 
