@@ -130,6 +130,7 @@ exports.commands = {
         let result = await getBookData(query);
 
         if (result.res === "ERR") {
+            console.log("error: " + result.data);
             room.send(`/changeuhtml ${ID}, <div class="infobox" style="color: red">${result.data}</div>`);
         }
         else if (result.res === "SUCCESS") {
@@ -137,6 +138,7 @@ exports.commands = {
             room.send(`/changeuhtml ${ID}, <div class="infobox">${result.data}</div>`);
         }
         else {
+            console.log("invalid status code")
             room.send(`/changeuhtml ${ID}, <div class="broadcast-red">Function <code>getBookdata</code> returned invalid status code: <code>${result.res}</code></div>`);
         }
 	}
