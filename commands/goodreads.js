@@ -102,7 +102,7 @@ let getBookData = async function(query) {
                 })
             }
             catch (e) {
-                //console.log(bookdata);
+                console.log(e);
             }
             tries += 1;
         }
