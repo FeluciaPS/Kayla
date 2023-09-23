@@ -10,7 +10,7 @@ let buildBox = function (title, img, desc, rating, ratings, genres, url) {
 <div style="overflow: auto; padding: 10px">
     <center>
         <div style="background-color:rgba(120, 225, 120, 0.2);border:1px solid black; width: 70%; min-width: 720px; max-width: 1200px; height:200px; position:relative">
-            <img src="${img}" width="0" height="0" style="height:180px;width:auto; position: absolute; left: 0; top: 0; margin:10px">
+            <img src="${img}" width="0" height="0" style="height:180px;width:auto; position: absolute; left: 0; top: 0; margin:10px; border-radius: 5px">
             <table style="width:60%; position:absolute; right: 20px; margin: 10px">
                 <tr>
                     <th colspan="2" style="font-size:24px">
@@ -93,9 +93,9 @@ let getBookData = async function(query) {
                 let title = document.querySelector('.Text__title1').textContent;
                 let rating = document.querySelector('.RatingStatistics__rating').textContent;
                 let image = document.querySelector('.BookCover img').src;
-                let description = document.querySelector('.TruncatedContent span').innerHTML.replace(/<[^>]+>/g, '').split('').slice(0, 400).join('') + '...';
+                let description = document.querySelector('.TruncatedContent span').innerHTML.replace(/<[^>]+>/g, '').split('').slice(0, 400).join('');
 
-                description = description.replace(/\.[^\s]/g, '. ');
+                description = description.replace(/\.[^\s]/g, '. ') + '...';
                 let ratings = document.querySelector('.RatingStatistics__meta > span').textContent.split(/\s/)[0];
                 let genres = Array.from(document.querySelectorAll('.BookPageMetadataSection__genreButton')).map(x => x.textContent);
             
