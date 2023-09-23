@@ -12,7 +12,8 @@
     "websocket": "1.x.x"
   },
   "scripts": {
-    "start": "nvm exec 16 forever start app.js",
-    "stop": "nvm exec 16 forever stop app.js"
+    "prestart": "source $HOME/.nvm/nvm.sh; nvm use 16",
+    "start": "forever start app.js",
+    "stop": "forever stop app.js"
   }
 }
