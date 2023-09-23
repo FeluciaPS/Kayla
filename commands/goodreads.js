@@ -93,12 +93,14 @@ let getBookData = async function(query) {
                 let title = document.querySelector('.Text__title1').textContent;
                 let rating = document.querySelector('.RatingStatistics__rating').textContent;
                 let image = document.querySelector('.BookCover img').src;
-                let description = document.querySelector('.TruncatedContent span').innerHTML.replace(/<[^>]+>/g, '').split('').slice(0, 300).join('') + '...';
-                let ratings = document.querySelector('.RatingStatistics__meta > span').textContent.split('&')[0];
+                let description = document.querySelector('.TruncatedContent span').innerHTML.replace(/<[^>]+>/g, '').split('').slice(0, 400).join('') + '...';
+
+                description = description.replace(/\.[^\s]/g, '. ');
+                let ratings = document.querySelector('.RatingStatistics__meta > span').textContent.split(/\s/)[0];
                 let genres = Array.from(document.querySelectorAll('.BookPageMetadataSection__genreButton')).map(x => x.textContent);
             
                 let box = buildBox(title, image, description, rating, ratings, genres, bookURL)
-                resolve({
+                return resolve({
                     res: `SUCCESS`,
                     data: box
                 })
