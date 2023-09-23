@@ -81,14 +81,15 @@ let getBookData = async function(query) {
         bookURL = `https://goodreads.com` + bookURL;
         
         console.log(bookURL);
-        let bookdata = await getWebData(bookURL);
-
-        let bookDOM = new JSDOM(bookdata);
-        let document = bookDOM.window.document;
 
         let tries = 0;
         while (tries < MAX_LOAD_ATTEMPTS) {
             try {
+                var bookdata = await getWebData(bookURL);
+
+                let bookDOM = new JSDOM(bookdata);
+                let document = bookDOM.window.document;
+
                 let title = document.querySelector('.Text__title1').textContent;
                 let rating = document.querySelector('.RatingStatistics__rating').textContent;
                 let image = document.querySelector('.BookCover img').src;
@@ -102,6 +103,7 @@ let getBookData = async function(query) {
                 })
             }
             catch (e) {
+                if (tries == 0) console.log(bookdata)
                 console.log(e);
             }
             tries += 1;
