@@ -28,7 +28,7 @@ let buildBox = function (title, img, desc, rating, ratings, genres, url) {
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align:right">
+                    <td colspan="2" style="text-align:justify">
                         <div style="font-style:italic;padding-right:10px">
                             ${desc}
                         </div>
