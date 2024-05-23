@@ -44,7 +44,7 @@ global.Monitor = require('./monitor.js');
 
 
 // Connect
-let psurl = "ws://sim.smogon.com:8000/showdown/websocket";
+let psurl = "wss://sim3.psim.us/showdown/websocket";
 let WebSocketClient = require('websocket').client;
 let websocket = new WebSocketClient({maxReceivedFrameSize: 0x400000}); // Large frame size due to PS not splicing large |init| messages
 websocket.connect(psurl);
